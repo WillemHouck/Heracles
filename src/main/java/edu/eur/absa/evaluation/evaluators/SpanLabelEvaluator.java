@@ -61,33 +61,57 @@ public class SpanLabelEvaluator implements Evaluator {
 		int falsePos=0;
 		int falseNeg=0;
 		
-		
-		
 //		for (DataEntity parentAnnotatable : predictions.keySet()){
-		for (DataEntity parentAnnotatable : testSet){
+		for (DataEntity parentAnnotatable : testSet){    //for each review
 			
-			
+			//Framework.log("ParentAnnotatable " + parentAnnotatable.toString());
+					
 			Span parentSpan = (Span)parentAnnotatable;
+			//Framework.log("ParentSpan " + parentSpan.toString());
 //			Framework.log(parentSpan.getType());
 			Dataset dataset = parentSpan.getDataset();
-			HashSet<Prediction> preds = predictions.getOrDefault(parentSpan, new HashSet<Prediction>());
+		
+			HashSet<Prediction> preds = new HashSet<Prediction>();
+			
+			//get all spans within the textual unit of the parentSpan with type = spanType
+			TreeSet<Span> sentencesForReview = dataset.getSpans(parentSpan.getTextualUnit(), "sentence");
+			
+			//TreeSet<Span> sentencesForReview = parentSpan.getDataset().getSpans(parentSpan, "sentence");    //get all the sentences in this review
+			//Framework.log("SentencesForReview " + sentencesForReview.toString());
+			for(Span sentence : sentencesForReview)    //for each sentence in this review
+			{
+				//Framework.log("  Sentence " + sentence.toString());
+				HashSet<Prediction> tempPreds = predictions.getOrDefault(sentence, new HashSet<Prediction>());    //find multiple predictions for each sentence
+				//Framework.log("  PredictionsFromSentence " + tempPreds);
+				for (Prediction pred : tempPreds)    //for each prediction from the sentence --> does only one prediction
+				{
+					preds.add(pred);    //adding this prediction to all the predictions from the given review
+					//Framework.log("    Adding " + pred);
+				}
+			}
+			//Framework.log("Preds " + preds);
 			HashSet<Object> predictedLabels = new HashSet<>();
 			for (Prediction p : preds){
 				if (p.hasAnnotation(spanLabel))
 					predictedLabels.add(p.getAnnotation(spanLabel));
 			}
 			
+			//Framework.log("PredictedLabels " + predictedLabels);			
 			
 			//get all spans within the textual unit of the parentSpan with type = spanType
 			TreeSet<Span> golds = dataset.getSpans(parentSpan.getTextualUnit(), spanType);
+			//Framework.log("Golds1 " + golds);
 			//only get spans out of this set that are covered by the parentSpan (e.g., only opinions under this sentence)
 			golds = parentSpan.getCoveredSpans(golds);
+			//Framework.log("Golds2 " + golds);
 			
 			HashSet<Object> goldLabels = new HashSet<>();
 			for (Span s : golds){
+				//Framework.log("S is " + s);
 				if (s.hasAnnotation(spanLabel))
 					goldLabels.add(s.getAnnotation(spanLabel));
 			}
+			//Framework.log("GoldLabels " + goldLabels);
 			
 			if (failureAnalysis){
 				Framework.debug("\n"+predictedLabels.toString());

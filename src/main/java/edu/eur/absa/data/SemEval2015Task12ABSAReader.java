@@ -227,7 +227,6 @@ public class SemEval2015Task12ABSAReader implements IDataReader {
 				for (String pol : sentSentFreqs.keySet()){
 					sortedPolarities.put(sentSentFreqs.get(pol), pol);
 				}
-//				Framework.log(sentSentFreqs.toString() + "\n" + sortedPolarities.toString());
 				deviatingOpinionsR += opinionsInReview.size() - sortedPolarities.lastKey();
 			}
 		}

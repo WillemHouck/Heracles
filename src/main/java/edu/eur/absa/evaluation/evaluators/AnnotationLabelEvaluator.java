@@ -1,7 +1,9 @@
 package edu.eur.absa.evaluation.evaluators;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import edu.eur.absa.algorithm.Prediction;
 import edu.eur.absa.Framework;
@@ -60,8 +62,20 @@ public class AnnotationLabelEvaluator implements Evaluator {
 				analysisSpans.addAll(parentSpan.getCoveredSpans(parentSpan.getDataset().getSpans(spanType)));
 			}
 			
-			for (Span span : analysisSpans){
-				boolean annotated = span.hasAnnotation(annotationType);
+			for (Span span : analysisSpans)
+			{
+				
+				TreeSet<Span> opinionsPerSentence = getOpinionsFromSentence(span);
+				ArrayList<String> aspectsPerSentence = new ArrayList<String>();
+				while (opinionsPerSentence.iterator().hasNext())
+				{
+					Span opinion = opinionsPerSentence.iterator().next();
+					String opinionAspect = opinion.getAnnotation(annotationType);
+					aspectsPerSentence.add(opinionAspect);
+				}
+				
+				boolean annotated = false;
+				boolean predicted = false;
 				String group = "";
 				
 					
@@ -69,89 +83,216 @@ public class AnnotationLabelEvaluator implements Evaluator {
 					
 					HashSet<Prediction> preds = predictions.get(span);
 					//only a single prediction is performed for this type of problem
-					
-					Prediction singlePrediction = preds.iterator().next();
-					boolean predicted = singlePrediction.hasAnnotation(annotationType); 
-					if (groupBy){
-						group = singlePrediction.getAnnotation("group");
+					ArrayList<String> predsAspects = new ArrayList<String>();
+					while (preds.iterator().hasNext())
+					{
+						Prediction temp = preds.iterator().next();
+						String aspect = temp.getAnnotation(annotationType);
+						predsAspects.add(aspect);
 					}
 					
-//					Framework.debug("Prediction found..."+singlePrediction.getAnnotations());
-//					Framework.debug("Gold values: "+span.getAnnotations());
-					boolean triggerFailureAnalysis = true;
-					if (predicted && annotated){
-						//check the values
-						Object predObj = singlePrediction.getAnnotation(annotationType);
-						Object annotObj = span.getAnnotation(annotationType);
-						if (predObj.equals(annotObj)){
-							truePos.put(group, truePos.getOrDefault(group,0)+1);
-							if (groupBy)
-								truePos.put("All", truePos.getOrDefault("All",0)+1);
-							triggerFailureAnalysis = false;
-						} else {
-							falsePos.put(group, falsePos.getOrDefault(group,0)+1);
-							falseNeg.put(group, falseNeg.getOrDefault(group,0)+1);
-							if (groupBy){
-								falsePos.put("All", falsePos.getOrDefault("All",0)+1);
-								falseNeg.put("All", falseNeg.getOrDefault("All",0)+1);
+					
+					if (predsAspects.size() >= aspectsPerSentence.size())
+					{
+						ArrayList<String> predsCopy = predsAspects;
+						ArrayList<String> aspectsPerSentenceCopy = aspectsPerSentence;
+						while (predsAspects.iterator().hasNext())
+						{
+							Object annotObj = "";
+							Object predObj = "";
+							String singlePredAspect = predsAspects.iterator().next();
+							if (aspectsPerSentenceCopy.contains(singlePredAspect))
+							{
+								annotated = true;
+								predicted = true;
+								aspectsPerSentenceCopy.remove(singlePredAspect);
+								annotObj = singlePredAspect;
+								predObj = singlePredAspect;
+							}
+							else
+							{
+								predicted = true;
+								annotated = false;
+							}
+							
+							boolean triggerFailureAnalysis = true;
+							if (predicted && annotated)
+							{
+								//check the values
+								if (predObj.equals(annotObj)){
+									truePos.put(group, truePos.getOrDefault(group,0)+1);
+									if (groupBy)
+										truePos.put("All", truePos.getOrDefault("All",0)+1);
+									triggerFailureAnalysis = false;
+								} else {
+									falsePos.put(group, falsePos.getOrDefault(group,0)+1);
+									falseNeg.put(group, falseNeg.getOrDefault(group,0)+1);
+									if (groupBy){
+										falsePos.put("All", falsePos.getOrDefault("All",0)+1);
+										falseNeg.put("All", falseNeg.getOrDefault("All",0)+1);
+									}
+								}
+							} else if (predicted && !annotated){
+								falsePos.put(group, falsePos.getOrDefault(group,0)+1);
+								if (groupBy){
+									falsePos.put("All", falsePos.getOrDefault("All",0)+1);
+								}
 							}
 						}
-					} else if (predicted && !annotated){
-						falsePos.put(group, falsePos.getOrDefault(group,0)+1);
-						if (groupBy){
-							falsePos.put("All", falsePos.getOrDefault("All",0)+1);
-						}
-					} else if (!predicted && annotated){
-						falseNeg.put(group, falseNeg.getOrDefault(group,0)+1);
-						if (groupBy){
-							falseNeg.put("All", falseNeg.getOrDefault("All",0)+1);
-						}
-	//					Main.debug("False neg:\n"+parentSpan.getAnnotations()+"\n"+singlePrediction.getAnnotations());
 						
+						for (int i = 0; i < aspectsPerSentenceCopy.size(); i++)
+						{
+							annotated = true;
+							predicted = false;
+
+							boolean triggerFailureAnalysis = true;				
+							if (!predicted && annotated)
+							{
+								falseNeg.put(group, falseNeg.getOrDefault(group,0)+1);
+								if (groupBy){
+									falseNeg.put("All", falseNeg.getOrDefault("All",0)+1);
+								}
+			//					Main.debug("False neg:\n"+parentSpan.getAnnotations()+"\n"+singlePrediction.getAnnotations());
+								
+							}
+						}						
 					}
 					
-					if (failureAnalysis && triggerFailureAnalysis){
-						Framework.log("Predicted: "+singlePrediction.getAnnotation(annotationType));
-						Framework.log("Gold: "+span.getAnnotation(annotationType));
-						Framework.log(span.getTextualUnit().getAnnotation("text"));
-						Framework.log(""+span.getTextualUnit());
-						
-						Span sentence = span.getTextualUnit().getCoveredSpans(span.getDataset().getSpans("sentence", span.first())).first();
-						Framework.log(sentence.toString());
-						Framework.log(span.toString());
-						Framework.log(features.get(span)+"");
-					}
 					
-				} else {
-					//no prediction, check if it's a false neg
-					if (annotated){
-						falseNeg.put(group, falseNeg.getOrDefault(group,0)+1);
-						if (groupBy){
-							falseNeg.put("All", falseNeg.getOrDefault("All",0)+1);
+					else if (opinionsPerSentence.size() > preds.size())
+					{
+						ArrayList<String> predsCopy = predsAspects;
+						ArrayList<String> aspectsPerSentenceCopy = aspectsPerSentence;
+						while (aspectsPerSentence.iterator().hasNext())
+						{
+							Object annotObj = "";
+							Object predObj = "";
+							String singleAspectsPerSentence = aspectsPerSentence.iterator().next();
+							if (predsCopy.contains(singleAspectsPerSentence))
+							{
+								annotated = true;
+								predicted = true;
+								predsCopy.remove(singleAspectsPerSentence);
+								annotObj = singleAspectsPerSentence;
+								predObj = singleAspectsPerSentence;
+							}
+							else
+							{
+								annotated = true;
+								predicted = false;
+							}
+							
+							boolean triggerFailureAnalysis = true;
+							if (predicted && annotated){
+								//check the values
+								if (predObj.equals(annotObj)){
+									truePos.put(group, truePos.getOrDefault(group,0)+1);
+									if (groupBy)
+										truePos.put("All", truePos.getOrDefault("All",0)+1);
+									triggerFailureAnalysis = false;
+								} else {
+									falsePos.put(group, falsePos.getOrDefault(group,0)+1);
+									falseNeg.put(group, falseNeg.getOrDefault(group,0)+1);
+									if (groupBy){
+										falsePos.put("All", falsePos.getOrDefault("All",0)+1);
+										falseNeg.put("All", falseNeg.getOrDefault("All",0)+1);
+									}
+								}
+							}
+							else if (!predicted && annotated){
+								falseNeg.put(group, falseNeg.getOrDefault(group,0)+1);
+								if (groupBy){
+									falseNeg.put("All", falseNeg.getOrDefault("All",0)+1);
+								}
+			//					Main.debug("False neg:\n"+parentSpan.getAnnotations()+"\n"+singlePrediction.getAnnotations());
+								
+							}			
 						}
-	//					Main.debug("No prediction found for: "+parentSpan);
-//						if (failureAnalysis){
-//							Framework.log("Predicted: Nothing!");
-//							Framework.log("Gold: "+span.getAnnotations().get(annotationType));
-//							Framework.log(span.getTextualUnit().getAnnotations().get("text"));
-//							Framework.log(span.toString());
-//							Framework.log(features.get(span).toString());
-//						}
+						
+						for (int i = 0; i < predsCopy.size(); i++)
+						{
+							annotated = false;
+							predicted = true;
+							
+							boolean triggerFailureAnalysis = true;						
+							if (predicted && !annotated)
+							{
+								falsePos.put(group, falsePos.getOrDefault(group,0)+1);
+								if (groupBy){
+									falsePos.put("All", falsePos.getOrDefault("All",0)+1);
+								}
+							}						
+						}
 					}
-					
-					
-					
-				}
-	//				Framework.log("TP: "+truePos+"\tFP: "+falsePos+"\tFN: "+falseNeg);
 				
 			}
 		}
+	}
 		if (!groupBy){
 			return new ClassificationResults(getLabel(), truePos.getOrDefault("",0), falsePos.getOrDefault("",0), falseNeg.getOrDefault("",0));
 		} else {
 			return new GroupedClassificationResults(getLabel(), truePos, falsePos, falseNeg);
 		}
 		
+	}
+	
+	public Span getSentence(Span opinionSpan)
+	{
+
+		TreeSet<Span> sentences = new TreeSet<Span>();
+		sentences.addAll(opinionSpan.getDataset().getSpans("sentence", opinionSpan.first()));
+		sentences.addAll(opinionSpan.getDataset().getSpans("sentence", opinionSpan.last()));
+		if (sentences.isEmpty()) 
+		{
+			Framework.log("No sentences?");
+			Framework.log("Content opinionSpan: "+opinionSpan.size());
+			Framework.log("Textual unit: "+opinionSpan.getTextualUnit().toString());
+			TreeSet<Span> sentenceList = opinionSpan.getDataset().getSpans(opinionSpan.getTextualUnit(), "sentence");
+			for (Span sentence : sentenceList) 
+			{
+				Framework.log(sentence.contains(opinionSpan.first()) + "\t" + sentence.contains(opinionSpan.last()) + "\t" + sentence.getWords());
+			}
+		}
+		return sentences.first();
+	}
+	
+	public Span getReview(Span sentenceSpan)
+	{
+
+		TreeSet<Span> reviews = new TreeSet<Span>();
+		reviews.addAll(sentenceSpan.getDataset().getSpans("review", sentenceSpan.first()));
+		reviews.addAll(sentenceSpan.getDataset().getSpans("review", sentenceSpan.last()));
+		if (reviews.isEmpty()) 
+		{
+			Framework.log("No reviews?");
+			Framework.log("Content sentenceSpan: "+sentenceSpan.size());
+			Framework.log("Textual unit: "+sentenceSpan.getTextualUnit().toString());
+			TreeSet<Span> reviewList = sentenceSpan.getDataset().getSpans(sentenceSpan.getTextualUnit(), "sentence");
+			for (Span review : reviewList) 
+			{
+				Framework.log(review.contains(sentenceSpan.first()) + "\t" + review.contains(sentenceSpan.last()) + "\t" + review.getWords());
+			}
+		}
+		return reviews.first();
+	}
+	
+	public TreeSet<Span> getOpinionsFromSentence(Span sentence)
+	{		
+			Span review = getReview(sentence);			
+			TreeSet<Span> opinionsForReview = review.getDataset().getSpans(review, "opinion");		
+			TreeSet<Span> opinionsPerSentence = new TreeSet<Span>();
+			
+			for (Span opinion : opinionsForReview)
+			{
+				Span sentence1 = getSentence(opinion);
+				
+				if (sentence1.equals(sentence))
+				{
+					opinionsPerSentence.add(opinion);
+
+				}
+			}			
+		return opinionsPerSentence;
 	}
 
 	@Override

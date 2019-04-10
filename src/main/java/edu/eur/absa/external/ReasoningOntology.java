@@ -41,16 +41,21 @@ public class ReasoningOntology implements IOntology {
 	public final String URI_ActionMention = NS+"#ActionMention";
 	public final String URI_EntityMention = NS+"#EntityMention";
 	public final String URI_PropertyMention = NS+"#PropertyMention";
-//	public final String URI_NamedEntityMention = NS+"NamedEntityMention";
-//	public final String URI_Statement = NS+"#Statement";
 	public final String URI_Sentiment = NS+"#Sentiment";
 	public final String URI_Positive = NS+"#Positive";
 	public final String URI_Negative = NS+"#Negative";
-//	public final String URI_Decrease = NS+"#Decrease";
-//	public final String URI_Increase = NS+"#Increase";
-//	public final String URI_NegativeEntityMention = NS+"#NegativeEntityMention";
-//	public final String URI_PositiveEntityMention = NS+"#PositiveEntityMention";
-//	public final String URI_TransitiveMention = NS+"TransitiveChangeMention";
+	public final String URI_RESTAURANT_GENERAL = NS+"#RESTAURANT#GENERAL";
+	public final String URI_RESTAURANT_PRICES = NS+"#RESTAURANT#PRICES";
+	public final String URI_RESTAURANT_MISCELLANEOUS = NS+"#RESTAURANT#MISCELLANEOUS";
+	public final String URI_FOOD_PRICES = NS+"#FOOD#PRICES";
+	public final String URI_FOOD_QUALITY = NS+"#FOOD#QUALITY";
+	public final String URI_FOOD_STYLE_OPTIONS = NS+"#FOOD#STYLE_OPTIONS";
+	public final String URI_DRINKS_PRICES = NS+"#DRINKS#PRICES";
+	public final String URI_DRINKS_QUALITY = NS+"#DRINKS#QUALITY";
+	public final String URI_DRINKS_STYLE_OPTIONS = NS+"#DRINKS#STYLE_OPTIONS";
+	public final String URI_AMBIENCE_GENERAL = NS+"#AMBIENCE#GENERAL";
+	public final String URI_SERVICE_GENERAL = NS+"#SERVICE#GENERAL";
+	public final String URI_LOCATION_GENERAL = NS+"#LOCATION#GENERAL";
 	public final String URI_Mention = NS+"#Mention";
 	
 	private final int SAVE_MAX_COUNTER = 10;
@@ -59,7 +64,6 @@ public class ReasoningOntology implements IOntology {
 	private OntModel ontology = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RULE_INF);
 	
 	private OntModel data;// = FileManager.get().loadModel("file:data/rdfsDemoData.rdf");
-//	private InfModel ontology;// = ModelFactory.createRDFSModel(schema, data);
 	
 	private HashMap<String, HashSet<String>> superclasses = new HashMap<>();
 	private HashMap<String, String> antonyms = new HashMap<>();
@@ -172,7 +176,6 @@ public class ReasoningOntology implements IOntology {
 		
 		
 		HashSet<String> ontoConcepts=new HashSet<String>();
-//		System.out.println(literal);
 		while (iter.hasNext()) {
 			
 			Statement stmt = iter.nextStatement();
@@ -180,12 +183,10 @@ public class ReasoningOntology implements IOntology {
 			StmtIterator iter2 = ontology.listStatements(new SimpleSelector(
 					subject, 
 					ontology.getProperty("http://www.w3.org/2000/01/rdf-schema#subClassOf"),
-//					ontology.getProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
 					ontology.getResource(superclassURI)));
 			if (iter2.hasNext())
 				ontoConcepts.add(subject.getURI());
 			
-//			System.out.println(subject.toString());
 		}
 		return ontoConcepts;
 	}
@@ -238,7 +239,6 @@ public class ReasoningOntology implements IOntology {
 		
 		
 		HashSet<String> ontoConcepts=new HashSet<String>();
-//		System.out.println(literal);
 		while (iter.hasNext()) {
 			
 			Statement stmt = iter.nextStatement();
@@ -250,7 +250,6 @@ public class ReasoningOntology implements IOntology {
 //			if (iter2.hasNext())
 				ontoConcepts.add(subject.getURI());
 			
-//			System.out.println(subject.toString());
 		}
 		return ontoConcepts;
 	}
@@ -390,6 +389,11 @@ public class ReasoningOntology implements IOntology {
 	public HashSet<String> getLexicalizations(String uri){
 		return getObjects(uri, NS+"#lex");
 	}
+	
+	public HashSet<String> getAspects(String uri)
+	{
+		return getObjects(uri, NS+"#aspect");
+	}
 
 	public String getNS(){
 		return NS;
@@ -400,21 +404,45 @@ public class ReasoningOntology implements IOntology {
 		HashMap<String, String> foundTargets = new HashMap<>();
 		for (String uri : foundClasses) {
 			for (String lex : getLexicalizations(uri)){
-				//System.out.println("Lexicalization found for: " + subject.getURI());
-	//			if (lex.contains(" ")){
-	//				System.out.println("Found a multi word concept: " + subject.getURI() + "\t" + sentenceText);
-	//			}
+				
 				if (lex.contains(" ") && sentenceText.contains(lex)){
 					//found one
 					foundTargets.put(lex, uri);
-	//				System.out.println("Found a multi word concept in this sentence: " + subject.getURI());
 				}
 			}
 		}
 		return foundTargets;
 	}
 	
-	
+	public static ArrayList<String> getRestaurantAspects()
+	{
+		ArrayList<String> entity = new ArrayList<String>();
+		ArrayList<String> attribute = new ArrayList<String>();
+		ArrayList<String> restaurantAspects = new ArrayList<String>();
+		
+		entity.add("RESTAURANT");
+		entity.add("FOOD");
+		entity.add("DRINKS");
+		entity.add("AMBIENCE");
+		entity.add("SERVICE");
+		entity.add("LOCATION");
+		
+		attribute.add("GENERAL");
+		attribute.add("PRICES");
+		attribute.add("QUALITY");
+		attribute.add("STYLE_OPTIONS");
+		attribute.add("MISCELLANEOUS");
+		
+		for(int i = 0; i < entity.size(); i++)
+		{
+			for (int j = 0; j < attribute.size(); j++)
+			{
+				restaurantAspects.add(entity.get(i) + "#" + attribute.get(j));
+			}
+		}
+		
+		return restaurantAspects;
+	}
 	
 	
 	/**

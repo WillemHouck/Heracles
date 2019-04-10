@@ -37,13 +37,13 @@ public class ESWC2018 {
 		
 		//If the raw SemEval XML data have not yet been processed (gone through NLP pipeline)
 		// you need to uncomment this
-//		SemEval2015Task12ABSAReader.main(null);
+		//SemEval2015Task12ABSAReader.main(null);
 		
 		/*
 		 * Read SemEval 2015 ABSA and SemEval 2016 ABSA data (restaurants only)
 		 */
 		
-		String ontology = "ontology.owl";
+		String ontology = "ontology.owl";		
 		
 		Dataset train2015 =  (new DatasetJSONReader()).read(new File(Framework.DATA_PATH+"SemEval2015Restaurants-Train.json"));
 		train2015.process(new OntologyLookup(null, ReasoningOntology.getOntology(Framework.EXTERNALDATA_PATH + ontology)), "review");
@@ -55,7 +55,7 @@ public class ESWC2018 {
 		Dataset test2016 =  (new DatasetJSONReader()).read(new File(Framework.DATA_PATH+"SemEval2016SB1Restaurants-Test.json"));
 		test2016.process(new OntologyLookup(null, ReasoningOntology.getOntology(Framework.EXTERNALDATA_PATH + ontology)), "review");
 		
-		ontology = "ontology.owl-Expanded.owl";
+//		ontology = "ontology.owl-Expanded.owl";
 		int nrc = AspectSentimentSVMAlgorithm.RESTAURANTS;
 		
 		
@@ -73,21 +73,22 @@ public class ESWC2018 {
 			.setProperty("ont_ns", "http://www.kimschouten.com/sentiment/restaurant");
 		
 		AbstractAlgorithm BoW = new AspectSentimentSVMAlgorithm("BoW", "review", false, nrc)
-			.setBinaryProperties("use_stanford_sentence_sentiment", "use_review","predict_neutral", "use_category","use_hyperparameter_optimization","Xignore_validation_data")
+			.setBinaryProperties("use_sentence", "predict_null", "Xignore_validation_data")
 			.setProperty("ont", ontology)	
 			.setProperty("ont_ns", "http://www.kimschouten.com/sentiment/restaurant");	
 				
 		AbstractAlgorithm BoWOnt = new AspectSentimentSVMAlgorithm("BoW+Ont", "review", false, nrc)
-			.setBinaryProperties("use_stanford_sentence_sentiment", "use_review","predict_neutral", 
-					"use_category","use_hyperparameter_optimization","Xignore_validation_data",
+			.setBinaryProperties("use_sentence","predict_null", 
+					"use_hyperparameter_optimization","Xignore_validation_data",
 					"use_ontology")
 			.setProperty("ont", ontology)
 			.setProperty("ont_ns", "http://www.kimschouten.com/sentiment/restaurant");
 		
 //		runExperimentTable1(Ont,BoW,OntBoW,BoWOnt,train2015);
-		runExperimentTable2(Ont,BoW,OntBoW,BoWOnt,train2016);
-//		runExperimentTable3(Ont,train2015,test2015,train2016,test2016);
+//      runExperimentTable2(Ont,BoW,OntBoW,BoWOnt,train2016);
+      runExperimentTable3(BoW,train2015,test2015,train2016,test2016);
 //		runExperimentFigure5(Ont,BoW,OntBoW,BoWOnt,train2015,test2015);
+//      runExperimentFigure6(BoW, train2016, test2016);
 //		runExperimentFigure6(Ont,BoW,OntBoW,BoWOnt,train2016,test2016);
 //		runExperimentTable4(Ont,BoW,OntBoW,BoWOnt,train2015,test2015,train2016,test2016);
 	}
@@ -96,9 +97,9 @@ public class ESWC2018 {
 	 * Experiment to get the results from Table 1
 	 */
 	public static void runExperimentTable1(AbstractAlgorithm Ont, 
-			AbstractAlgorithm BoW, 
-			AbstractAlgorithm OntBoW,
-			AbstractAlgorithm BoWOnt,
+			//AbstractAlgorithm BoW, 
+			//AbstractAlgorithm OntBoW,
+			//AbstractAlgorithm BoWOnt,
 			Dataset train2015) throws InstantiationException, IllegalAccessException {
 
 		Framework.log("****************************");
@@ -106,7 +107,8 @@ public class ESWC2018 {
 		Framework.log("****************************");
 		
 		Experiment.createNewExperiment()
-			.addAlgorithms(Ont, BoW, OntBoW, BoWOnt)
+			.addAlgorithms(Ont)
+		  //.addAlgorithms(Ont, BoW, OntBoW, BoWOnt)
 			.setDataset(train2015)	
 			.setCrossValidation(1, 10, 0.8, 0.2)
 			.run();
@@ -134,9 +136,9 @@ public class ESWC2018 {
 		
 	/**
 	 * Experiments to get the results from Table 3 (only the Ont+Bow results)
-	 * Left column first, then right colomn
+	 * Left column first, then right column
 	 */
-	public static void runExperimentTable3(AbstractAlgorithm Ont,
+	public static void runExperimentTable3(AbstractAlgorithm BoW,
 			Dataset train2015,
 			Dataset test2015,
 			Dataset train2016,
@@ -147,11 +149,11 @@ public class ESWC2018 {
 		Framework.log("****************************");
 		
 		Experiment.createNewExperiment()
-			.addAlgorithms(Ont)
+			.addAlgorithms(BoW)
 			.setTrainingAndTestSet(train2015, test2015, true, 0.8, 0.2)
 			.run();
 		Experiment.createNewExperiment()
-			.addAlgorithms(Ont)
+			.addAlgorithms(BoW)
 			.setTrainingAndTestSet(train2016, test2016, true, 0.8, 0.2)
 			.run();
 	}
@@ -184,10 +186,10 @@ public class ESWC2018 {
 	/**
 	 * Experiment to get the results from Figure 6
 	 */
-	public static void runExperimentFigure6(AbstractAlgorithm Ont, 
-			AbstractAlgorithm BoW, 
-			AbstractAlgorithm OntBoW,
-			AbstractAlgorithm BoWOnt,
+	public static void runExperimentFigure6(AbstractAlgorithm BoW, 
+			//AbstractAlgorithm BoW, 
+			//AbstractAlgorithm OntBoW,
+			//AbstractAlgorithm BoWOnt,
 			Dataset train2016,
 			Dataset test2016) throws InstantiationException, IllegalAccessException {
 		
@@ -200,7 +202,8 @@ public class ESWC2018 {
 			Framework.log("=== Training Data Size : " + trainingDataSize);
 			Framework.log("==========================================================================");
 			Experiment.createNewExperiment()
-				.addAlgorithms(Ont, BoW, OntBoW, BoWOnt) //MOnt, MOntBow,baseline, BowMOnt)
+				//.addAlgorithms(Ont, BoW, OntBoW, BoWOnt) //MOnt, MOntBow,baseline, BowMOnt)
+				.addAlgorithms(BoW)
 			.setTrainingAndTestSet(train2016, test2016, false, 0.8*trainingDataSize, 0.2*trainingDataSize)
 			.run();
 		}
