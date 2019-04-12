@@ -5,10 +5,10 @@ Apollo is based on the Heracles framework, in which the necessary adjustments an
 
 ## Key features:
 
-	•	Layered structure
-	•	Wrappers for Stanford CoreNLP
-	•	Link to Weka toolkit for machine learning algorithms
-	•	Proper evaluation methods, including cross-validation, testing algorithms side-by-side, and t-test for statistical significance. 
+* Layered structure
+* Wrappers for Stanford CoreNLP
+* Link to Weka toolkit for machine learning algorithms
+* Proper evaluation methods, including cross-validation, testing algorithms side-by-side, and t-test for statistical significance. 
 
 ## Installation:
 Apollo is an Eclipse Java project, so the project can be be cloned and then imported in an existing project. To import the project Java 8 is required, thus it should be checked if the Eclipse version is recent enough. 
