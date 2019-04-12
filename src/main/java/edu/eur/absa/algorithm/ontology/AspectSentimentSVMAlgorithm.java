@@ -460,7 +460,7 @@ public class AspectSentimentSVMAlgorithm extends AbstractAlgorithm {
 	private OntologySentimentAlgorithm ontAlg = new OntologySentimentAlgorithm("OntologySentimentAlgorithm","review");
 	
 	public AspectSentimentSVMAlgorithm(String analysisSpan, boolean failureAnalysis) {
-		this(analysisSpan, failureAnalysis, RESTAURANTS);
+		this(analysisSpan, failureAnalysis, LAPTOPS);
 		
 		
 	}
@@ -492,7 +492,7 @@ public class AspectSentimentSVMAlgorithm extends AbstractAlgorithm {
 		if (hasProperty("ont")){
 			ontAlg.setProperty("ont", getProperty("ont"));
 		} else {
-			ontAlg.setProperty("ont", "RestaurantSentimentExpanded.owl");
+			ontAlg.setProperty("ont", "LaptopSentimentExpanded.owl");
 		}
 		ontAlg.setProperty("ont_ns", "http://www.semanticweb.org/karoliina/ontologies/2017/4/Laptop");
 		ontAlg.setDataSubSets(dataSubSets, dataset);

@@ -119,7 +119,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 			//Span sentence = getSentence(opinion);
 			
 			Prediction p = new Prediction(sentence);
-			p.putAnnotation("category", "LAPTOP#GENERAL");    //Change this for laptops
+			p.putAnnotation("category", "LAPTOP#GENERAL"); 
 			String cat = "No aspect";
 			
 			if (!predictions.containsKey(sentence))
@@ -136,12 +136,12 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 		Framework.log(System.currentTimeMillis()+"\tStart next review");
 		ArrayList<Integer> frequencyAspectReview = new ArrayList<Integer>();
 		//Initializing the frequency count
-		for (int i = 0; i < ReasoningOntology.getLaptopsAspects().size(); i++)    //Change this for laptops
+		for (int i = 0; i < ReasoningOntology.getLaptopsAspects().size(); i++)  
 		{
 			frequencyAspectReview.add(0);
 		}
 		
-		//Getting the aspect frequencies from the whole (training) dataset for restaurants
+		//Getting the aspect frequencies from the whole (training) dataset
 		ArrayList<Integer> frequencyAspectData = new ArrayList<Integer>();
 		
 		//Laptops
@@ -345,37 +345,6 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 		frequencyAspectData.add(0);
 				
 		
-		//Restaurants
-//		frequencyAspectData.add(423);
-//		frequencyAspectData.add(80);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(97);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(89);
-//		frequencyAspectData.add(850);
-//		frequencyAspectData.add(136);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(20);
-//		frequencyAspectData.add(47);
-//		frequencyAspectData.add(32);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(255);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(449);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(28);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
-//		frequencyAspectData.add(0);
 
 		
 		//Getting a list of sentences in a review
@@ -392,12 +361,12 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 			
 			for (ArrayList<Integer> opinion : foundAspects)    //Loop through every opinion
 			{
-				prediction = "LAPTOP#GENERAL";    //Change this for laptops
+				prediction = "LAPTOP#GENERAL";
 				//boolean assignedPred = false;
 				
 				if (classLabels.isEmpty()) 
 				{
-							classLabels.addAll(ReasoningOntology.getLaptopsAspects());    //Change this for laptops
+							classLabels.addAll(ReasoningOntology.getLaptopsAspects());    
 					//		classLabels.add("missing");
 							
 							if (hasProperty("predict_null"))
@@ -576,7 +545,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 //								Framework.log("        The following aspect(s): " + aspectsFromOnt + " found from " + superclass);
 							}
 							
-							ArrayList<String> laptopAspects = ReasoningOntology.getLaptopsAspects();    //Change this for laptops
+							ArrayList<String> laptopAspects = ReasoningOntology.getLaptopsAspects();    
 							ArrayList<Integer> found_aspects = new ArrayList<Integer>();
 							for (int i = 0; i < laptopAspects.size(); i++)
 							{
@@ -591,7 +560,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 							}
 							
 							int sum = 0;
-							for(int i = 0; i < laptopAspects.size(); i++)    //Change this line for laptops
+							for(int i = 0; i < laptopAspects.size(); i++)    
 							{
 								sum += found_aspects.get(i);
 							}
