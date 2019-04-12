@@ -33,7 +33,7 @@ import weka.core.Attribute;
 
 public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 
-	private ReasoningOntology ont;
+	private ReasoningOntology ont;// = new ReasoningOntology(Framework.EXTERNALDATA_PATH + "RestaurantSentimentExpanded.owl");
 	private AbstractAlgorithm backupAlg = null;
 	private boolean failureAnalysis = false;
 	private HashSet<String> allCategoryURIs; 
@@ -42,6 +42,8 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 	
 	public OntologySentimentAlgorithm(String label,	String unitOfAnalysisSpanType) {
 		super(label, unitOfAnalysisSpanType);
+//		evaluators.add(new AnnotationLabelEvaluator("opinion","polarity",false,false));
+//	    evaluators.add(new AnnotationLabelEvaluator("sentence","category",false, false));
 		evaluators.add(new SpanLabelEvaluator("opinion", "category"));
 		
 		
@@ -70,6 +72,8 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 		}
 		if (hasProperty("ont")){
 			ont = ReasoningOntology.getOntology(Framework.EXTERNALDATA_PATH + getProperty("ont"));
+			//allCategoryURIs = ont.getLexicalizedConcepts(ont.URI_Mention, ont.getNS()+"#aspect", null);
+			//Framework.log("Categories: "+allCategoryURIs);
 		}
 	}
 	
@@ -99,6 +103,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 		
 		for (Span review : getTestData()){
 			predictForReview(review);
+//			testData(review);
 		}
 		ont.save(getProperty("ont")+"-Expanded.owl", true);
 		
@@ -110,10 +115,11 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 		TreeSet<Span> sentencesForReview = review.getDataset().getSpans(review, "sentence");
 		for (Span sentence : sentencesForReview){
 			
+			//Framework.log(opinion.toString());
 			//Span sentence = getSentence(opinion);
 			
 			Prediction p = new Prediction(sentence);
-			p.putAnnotation("category", "FOOD#QUALITY");
+			p.putAnnotation("category", "LAPTOP#GENERAL");    //Change this for laptops
 			String cat = "No aspect";
 			
 			if (!predictions.containsKey(sentence))
@@ -122,6 +128,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 			}
 			predictions.get(sentence).add(p);
 			
+			//this.predictions.put(sentence, p.getSingletonSet());
 		}
 	}
 	
@@ -129,63 +136,269 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 		Framework.log(System.currentTimeMillis()+"\tStart next review");
 		ArrayList<Integer> frequencyAspectReview = new ArrayList<Integer>();
 		//Initializing the frequency count
-		for (int i = 0; i < ReasoningOntology.getRestaurantAspects().size(); i++)    
+		for (int i = 0; i < ReasoningOntology.getLaptopsAspects().size(); i++)    //Change this for laptops
 		{
 			frequencyAspectReview.add(0);
 		}
 		
 		//Getting the aspect frequencies from the whole (training) dataset for restaurants
 		ArrayList<Integer> frequencyAspectData = new ArrayList<Integer>();
-		frequencyAspectData.add(423);
-		frequencyAspectData.add(80);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(97);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(89);
-		frequencyAspectData.add(850);
+		
+		//Laptops
+		frequencyAspectData.add(635);
 		frequencyAspectData.add(136);
+		frequencyAspectData.add(224);
+		frequencyAspectData.add(278);
+		frequencyAspectData.add(139);
+		frequencyAspectData.add(253);
+		frequencyAspectData.add(51);
+		frequencyAspectData.add(55);
+		frequencyAspectData.add(143);		
+		frequencyAspectData.add(24);
 		frequencyAspectData.add(0);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(20);
-		frequencyAspectData.add(47);
-		frequencyAspectData.add(32);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(255);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(449);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(0);
-		frequencyAspectData.add(0);
+		frequencyAspectData.add(54);
+		frequencyAspectData.add(14);
+		frequencyAspectData.add(6);
 		frequencyAspectData.add(28);
 		frequencyAspectData.add(0);
 		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);			
 		frequencyAspectData.add(0);
 		frequencyAspectData.add(0);
+		frequencyAspectData.add(2);
+		frequencyAspectData.add(18);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(1);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(1);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(7);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);			
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(11);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(14);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(16);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(10);
+		frequencyAspectData.add(85);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(1);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(11);
+		frequencyAspectData.add(4);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(3);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(1);		
+		frequencyAspectData.add(13);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(18);
+		frequencyAspectData.add(9);
+		frequencyAspectData.add(21);
+		frequencyAspectData.add(29);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(7);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(14);
+		frequencyAspectData.add(28);
+		frequencyAspectData.add(23);
+		frequencyAspectData.add(14);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(4);
+		frequencyAspectData.add(1);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(1);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);	
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(5);
+		frequencyAspectData.add(1);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(4);
+		frequencyAspectData.add(1);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(1);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(16);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(6);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(2);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(2);		
+		frequencyAspectData.add(6);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(25);
+		frequencyAspectData.add(5);
+		frequencyAspectData.add(4);
+		frequencyAspectData.add(4);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(1);		
+		frequencyAspectData.add(2);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(4);
+		frequencyAspectData.add(1);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(36);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(4);
+		frequencyAspectData.add(9);
+		frequencyAspectData.add(20);
+		frequencyAspectData.add(2);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(2);		
+		frequencyAspectData.add(32);
+		frequencyAspectData.add(1);
+		frequencyAspectData.add(2);
+		frequencyAspectData.add(15);
+		frequencyAspectData.add(17);
+		frequencyAspectData.add(6);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(13);			
+		frequencyAspectData.add(4);
+		frequencyAspectData.add(2);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);			
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(3);
+		frequencyAspectData.add(9);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);			
+		frequencyAspectData.add(5);		
+		frequencyAspectData.add(6);
+		frequencyAspectData.add(133);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(2);			
+		frequencyAspectData.add(88);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);		
+		frequencyAspectData.add(0);
+		frequencyAspectData.add(0);
+				
+		
+		//Restaurants
+//		frequencyAspectData.add(423);
+//		frequencyAspectData.add(80);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(97);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(89);
+//		frequencyAspectData.add(850);
+//		frequencyAspectData.add(136);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(20);
+//		frequencyAspectData.add(47);
+//		frequencyAspectData.add(32);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(255);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(449);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(28);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
+//		frequencyAspectData.add(0);
 
 		
 		//Getting a list of sentences in a review
 		TreeSet<Span> sentencesForReview = review.getDataset().getSpans(review, "sentence");
-		Framework.log("Need to assign aspects to "+sentencesForReview.size()+" sentences in this review");
+//		Framework.log("Need to assign aspects to "+sentencesForReview.size()+" sentences in this review");
 		for (Span sentence : sentencesForReview)    //Loop through every sentence
 		{
 			
 			ArrayList<ArrayList<Integer>> foundAspects = Opinions(sentence, sentencesForReview, ont);    //Getting opinions (with aspects) per sentence in a review
+			//Framework.log("The following aspects: " + foundAspects + " were found for " + sentence);
 			
 			String prediction = "No aspect";
 			boolean assignedPred = false;
 			
 			for (ArrayList<Integer> opinion : foundAspects)    //Loop through every opinion
 			{
-				prediction = "FOOD#QUALITY";
+				prediction = "LAPTOP#GENERAL";    //Change this for laptops
+				//boolean assignedPred = false;
 				
 				if (classLabels.isEmpty()) 
 				{
-							classLabels.addAll(ReasoningOntology.getRestaurantAspects());    
+							classLabels.addAll(ReasoningOntology.getLaptopsAspects());    //Change this for laptops
+					//		classLabels.add("missing");
 							
 							if (hasProperty("predict_null"))
 							{
@@ -201,6 +414,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 						int temp = frequencyAspectReview.get(i);
 						temp++;
 						frequencyAspectReview.set(i, temp);
+						//Framework.log("Frequencies for aspects in a review so far " + temp + " for i " + classLabels.get(i));
 					}
 				}				
 				
@@ -213,6 +427,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 				
 				if (sum > 1)    //More than one possible aspect
 				{
+					//Framework.log("Sum > 1");
 				
 					ArrayList<Integer> multiplicationReview = new ArrayList<Integer>();
 					ArrayList<Integer> multiplicationData = new ArrayList<Integer>();
@@ -233,13 +448,16 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 						int index = frequencyAspectData.indexOf(maxFreqData);
 						prediction = classLabels.get(index);    //Predict the most frequent
 						assignedPred = true;
+						//Framework.log("Maximum frequency (from data) = " + maxFreqData + " found at " + index + " for opinion " + opinion + ". Therefore prediction is " + prediction);
 					}
 					else if (!sameValue(multiplicationReview, maxFreqReview) && maxFreqReview > 1)
 					{
 						int index = frequencyAspectReview.indexOf(maxFreqReview);
 						prediction = classLabels.get(index);    //Predict the most frequent
 						assignedPred = true;
+						//Framework.log("Maximum frequency (from review) = " + maxFreqReview + " found at " + index + " for opinion " + opinion + ". Therefore prediction is " + prediction);
 					}
+					//Framework.log("Else - prediction is " + prediction);
 				
 				}
 				else if (sum == 1)    //Only one possible aspect
@@ -247,22 +465,31 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 					int index = opinion.indexOf(1);
 					prediction = classLabels.get(index);
 					assignedPred = true;
+					//Framework.log("Sum = 1 and prediction is " + prediction);
 				}	
 			
 			if (hasProperty("use_only_bow") || (hasProperty("use_bow_backup") && !assignedPred)){
 				Prediction backupPred = backupAlg.getPrediction(sentence).iterator().next();
 				prediction = backupPred.getAnnotation("category");
+				Framework.log("===\nUsing BOW backup to predict: " + prediction);
 			}
 				
 			if (failureAnalysis && !sentence.getAnnotation("category").equals(prediction) &&
 					!sentence.getAnnotation("category").equals("no_category")){
-				Framework.log("===");
-				Framework.log(sentence.toString());
-
+//				Framework.log("===");
+//				Framework.log(sentence.toString());
+				//Framework.log(getSentence(opinion).getAnnotation("text"));
+	//			for (Word w : sentence){
+	//				Framework.log(w.getLemma());
+	//			}
 				
-				Framework.log("===");
-				Framework.log("Found aspects: "+ foundAspects);
+//				Framework.log("===");
+//				Framework.log("Found aspects: "+ foundAspects);
+				//Framework.log("Found positive: " + foundPos);
+				//Framework.log("Found negative: " + foundNeg);
 				
+				//Framework.log("Gold: " + sentence.getAnnotation("category"));
+				//Framework.log("Predicted: "+ prediction);
 			}
 			
 			Prediction p = new Prediction(sentence);
@@ -287,6 +514,12 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 			
 			cat = cat_temp.substring(0, cat_temp.length() - 5);					
 			
+//			p.putAnnotation("group", cat);
+//			if (!predictions.containsKey(sentence))
+//			{
+//				predictions.put(sentence, new HashSet<Prediction>());
+//			}
+//			predictions.get(sentence).add(p);
 			
 			}
 		}
@@ -295,7 +528,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 	
 	public ArrayList<ArrayList<Integer>> Opinions(Span sentence, TreeSet<Span> sentencesForReview, ReasoningOntology ont)
 	{
-		Framework.log(System.currentTimeMillis()+"\tStart findURIs() for next sentence"); 
+//		Framework.log(System.currentTimeMillis()+"\tStart findURIs() for next sentence"); 
 		if (ont == null)
 		{
 			Framework.error("Ontology is null!");
@@ -307,7 +540,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 		}
 		
 		TreeSet<Word> scope = sentence.getWords();
-		Framework.log("Scope of the sentence is " + scope);
+//		Framework.log("Scope of the sentence is " + scope);
 		
 		int numWords = 0;
 		ArrayList<Word> wordsSentence = new ArrayList<Word>();
@@ -324,27 +557,30 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 					{
 						previousWord = currentWord;
 						currentWord = word;
+						//Framework.log("    Previous word with a URI is " + previousWord + " and the current word with a URI is " + currentWord);
 						String URI = word.getAnnotation("URI");
-						Framework.log("    Word " + word + " has a URI: " + URI);
+//						Framework.log("    Word " + word + " has a URI: " + URI);
 						HashSet<String> superclasses = new HashSet<String>();
 						HashSet<String> aspectsFromOnt = new HashSet<String>();
 						//Get all superclasses of this word
 						superclasses.addAll(ont.getSuperclasses(URI));
+//						Framework.log("    Retrieved " + superclasses.size() + " superclasses");
 						
 						for (String superclass : superclasses)
 						{	
+//							Framework.log("        Processing superclass " + superclass);
 							
 							aspectsFromOnt = ont.getAspects(superclass);
 							if (!aspectsFromOnt.isEmpty())
 							{
-								Framework.log("        The following aspect(s): " + aspectsFromOnt + " found from " + superclass);
+//								Framework.log("        The following aspect(s): " + aspectsFromOnt + " found from " + superclass);
 							}
 							
-							ArrayList<String> restaurantAspects = ReasoningOntology.getRestaurantAspects();    
+							ArrayList<String> laptopAspects = ReasoningOntology.getLaptopsAspects();    //Change this for laptops
 							ArrayList<Integer> found_aspects = new ArrayList<Integer>();
-							for (int i = 0; i < restaurantAspects.size(); i++)
+							for (int i = 0; i < laptopAspects.size(); i++)
 							{
-								if (aspectsFromOnt.contains(restaurantAspects.get(i)))
+								if (aspectsFromOnt.contains(laptopAspects.get(i)))
 								{
 									found_aspects.add(1);
 								}
@@ -355,7 +591,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 							}
 							
 							int sum = 0;
-							for(int i = 0; i < restaurantAspects.size(); i++)    
+							for(int i = 0; i < laptopAspects.size(); i++)    //Change this line for laptops
 							{
 								sum += found_aspects.get(i);
 							}
@@ -364,11 +600,13 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 							{
 								if (!wordAspects.contains(found_aspects))
 								{
+									//Framework.log("Gets into first if");
 									wordAspects.add(found_aspects);
 									found = true;
 								}
 								else if (wordAspects.contains(found_aspects) && (wordsSentence.indexOf(currentWord) - wordsSentence.indexOf(previousWord) > 3))
 								{
+									//Framework.log("Gets into second if");
 									wordAspects.add(found_aspects);
 									found = true;
 								}
@@ -376,14 +614,16 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 							}
 						}
 							
+//							Framework.log("        Sentence SO FAR has aspect(s) per word: " + wordAspects);
 							if (wordAspects.size() >= 2)
 							{
-								Framework.log("        newOpinion method gives " + newOpinion(currentWord, previousWord, wordAspects.get(wordAspects.size() - 1), wordAspects.get(wordAspects.size() - 2), wordsSentence));
+//								Framework.log("        newOpinion method gives " + newOpinion(currentWord, previousWord, wordAspects.get(wordAspects.size() - 1), wordAspects.get(wordAspects.size() - 2), wordsSentence));
 							}
 							if (wordAspects.size() >= 2 && newOpinion(currentWord, previousWord, wordAspects.get(wordAspects.size() - 1), wordAspects.get(wordAspects.size() - 2), wordsSentence) == null)    //New opinion
 							{
 								if (found)
 								{
+//									Framework.log("        It is a new opinion");
 									opinions.add(wordAspects.get(wordAspects.size() - 1));
 								}
 							}
@@ -391,6 +631,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 							{
 								if (found)
 								{
+//									Framework.log("        It is NOT a new opinion");
 									//Replacing last opinion with the intersection
 									opinions.set(opinions.size() - 1, newOpinion(currentWord, previousWord, wordAspects.get(wordAspects.size() - 1), wordAspects.get(wordAspects.size() - 2), wordsSentence));
 								}
@@ -399,11 +640,14 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 							{
 								if (found)
 								{
+//									Framework.log("        Else - too little words");
 									opinions.addAll(wordAspects);
 								}
 							}
+//							Framework.log("        Sentence SO FAR has opinions " + opinions);
 					}
 		}
+//		Framework.log("    Opinions in a sentence are  " + opinions);
 		return opinions;
 }
 
@@ -421,6 +665,7 @@ public class OntologySentimentAlgorithm extends AbstractAlgorithm {
 			}
 			else if (!identicalArrays(foundAspectsCurrent, foundAspectsPrevious) && !differentArrays(foundAspectsCurrent, foundAspectsPrevious) )   //OR or AND???
 			{
+				//Framework.log("Identical gives " + identicalArrays(foundAspectsCurrent, foundAspectsPrevious) + " different gives " + differentArrays(foundAspectsCurrent, foundAspectsPrevious));
 				finalFoundAspect = intersectionArrays(foundAspectsCurrent, foundAspectsPrevious);
 			}
 			else    //New opinion cause no intersection

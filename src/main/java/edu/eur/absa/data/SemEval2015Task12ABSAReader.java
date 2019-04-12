@@ -34,7 +34,7 @@ import edu.eur.absa.nlp.NLPTask;
  *
  */
 public class SemEval2015Task12ABSAReader implements IDataReader {
-
+	
 	/**
 	 * This is simply a test method
 	 * @param args
@@ -50,21 +50,21 @@ public class SemEval2015Task12ABSAReader implements IDataReader {
 	}
 	
 	public static void processAllData() throws Exception{
-		Dataset test = (new SemEval2015Task12ABSAReader()).read(new File(Framework.RAWDATA_PATH + "ABSA-15_Restaurants_Test_Gold.xml"));
-		(new DatasetJSONWriter()).write(test, new File(Framework.DATA_PATH+"SemEval2015Restaurants-Test.json"));
-		(new DatasetJSONWriter(true)).write(test, new File(Framework.DATA_PATH+"SemEval2015Restaurants-Test.pretty.json"));
+		Dataset test = (new SemEval2015Task12ABSAReader()).read(new File(Framework.RAWDATA_PATH + "ABSA-15_Laptops_Test_Gold.xml"));
+		(new DatasetJSONWriter()).write(test, new File(Framework.DATA_PATH+"SemEval2015Laptops-Test.json"));
+		(new DatasetJSONWriter(true)).write(test, new File(Framework.DATA_PATH+"SemEval2015Laptops-Test.pretty.json"));
 		
-		Dataset train = (new SemEval2015Task12ABSAReader()).read(new File(Framework.RAWDATA_PATH + "ABSA-15_Restaurants_Train_Data.xml"));
-		(new DatasetJSONWriter()).write(train, new File(Framework.DATA_PATH+"SemEval2015Restaurants-Train.json"));
-		(new DatasetJSONWriter(true)).write(train, new File(Framework.DATA_PATH+"SemEval2015Restaurants-Train.pretty.json"));
+		Dataset train = (new SemEval2015Task12ABSAReader()).read(new File(Framework.RAWDATA_PATH + "ABSA-15_Laptops_Train_Data.xml"));
+		(new DatasetJSONWriter()).write(train, new File(Framework.DATA_PATH+"SemEval2015Laptops-Train.json"));
+		(new DatasetJSONWriter(true)).write(train, new File(Framework.DATA_PATH+"SemEval2015Laptops-Train.pretty.json"));
 		
-		Dataset train2016 = (new SemEval2015Task12ABSAReader()).read(new File(Framework.RAWDATA_PATH + "ABSA-16_SB1_Restaurants_Train_Data.xml"));
-		(new DatasetJSONWriter()).write(train2016, new File(Framework.DATA_PATH+"SemEval2016SB1Restaurants-Train.json"));
-		(new DatasetJSONWriter(true)).write(train2016, new File(Framework.DATA_PATH+"SemEval2016SB1Restaurants-Train.pretty.json"));
+		Dataset train2016 = (new SemEval2015Task12ABSAReader()).read(new File(Framework.RAWDATA_PATH + "ABSA-16_SB1_Laptops_Train_Data.xml"));
+		(new DatasetJSONWriter()).write(train2016, new File(Framework.DATA_PATH+"SemEval2016SB1Laptops-Train.json"));
+		(new DatasetJSONWriter(true)).write(train2016, new File(Framework.DATA_PATH+"SemEval2016SB1Laptops-Train.pretty.json"));
 
-		Dataset test2016 = (new SemEval2015Task12ABSAReader()).read(new File(Framework.RAWDATA_PATH + "ABSA-16_SB1_Restaurants_Test_Gold.xml"));
-		(new DatasetJSONWriter()).write(test2016, new File(Framework.DATA_PATH+"SemEval2016SB1Restaurants-Test.json"));
-		(new DatasetJSONWriter(true)).write(test2016, new File(Framework.DATA_PATH+"SemEval2016SB1Restaurants-Test.pretty.json"));
+		Dataset test2016 = (new SemEval2015Task12ABSAReader()).read(new File(Framework.RAWDATA_PATH + "ABSA-16_SB1_Laptops_Test_Gold.xml"));
+		(new DatasetJSONWriter()).write(test2016, new File(Framework.DATA_PATH+"SemEval2016SB1Laptops-Test.json"));
+		(new DatasetJSONWriter(true)).write(test2016, new File(Framework.DATA_PATH+"SemEval2016SB1Laptops-Test.pretty.json"));
 
 		
 //		Dataset check = (new DatasetJSONReader()).read(new File(Framework.DATA_PATH+"SemEval2016SB1Restaurants-Training.json"));
@@ -227,6 +227,7 @@ public class SemEval2015Task12ABSAReader implements IDataReader {
 				for (String pol : sentSentFreqs.keySet()){
 					sortedPolarities.put(sentSentFreqs.get(pol), pol);
 				}
+//				Framework.log(sentSentFreqs.toString() + "\n" + sortedPolarities.toString());
 				deviatingOpinionsR += opinionsInReview.size() - sortedPolarities.lastKey();
 			}
 		}

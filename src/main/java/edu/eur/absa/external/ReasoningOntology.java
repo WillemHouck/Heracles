@@ -37,25 +37,33 @@ public class ReasoningOntology implements IOntology {
 	private static String singletonOntologyFile="";
 	private static ReasoningOntology singletonOntology;
 	
-	public final String NS = "http://www.kimschouten.com/sentiment/restaurant"; 
-	public final String URI_ActionMention = NS+"#ActionMention";
-	public final String URI_EntityMention = NS+"#EntityMention";
-	public final String URI_PropertyMention = NS+"#PropertyMention";
-	public final String URI_Sentiment = NS+"#Sentiment";
-	public final String URI_Positive = NS+"#Positive";
-	public final String URI_Negative = NS+"#Negative";
-	public final String URI_RESTAURANT_GENERAL = NS+"#RESTAURANT#GENERAL";
-	public final String URI_RESTAURANT_PRICES = NS+"#RESTAURANT#PRICES";
-	public final String URI_RESTAURANT_MISCELLANEOUS = NS+"#RESTAURANT#MISCELLANEOUS";
-	public final String URI_FOOD_PRICES = NS+"#FOOD#PRICES";
-	public final String URI_FOOD_QUALITY = NS+"#FOOD#QUALITY";
-	public final String URI_FOOD_STYLE_OPTIONS = NS+"#FOOD#STYLE_OPTIONS";
-	public final String URI_DRINKS_PRICES = NS+"#DRINKS#PRICES";
-	public final String URI_DRINKS_QUALITY = NS+"#DRINKS#QUALITY";
-	public final String URI_DRINKS_STYLE_OPTIONS = NS+"#DRINKS#STYLE_OPTIONS";
-	public final String URI_AMBIENCE_GENERAL = NS+"#AMBIENCE#GENERAL";
-	public final String URI_SERVICE_GENERAL = NS+"#SERVICE#GENERAL";
-	public final String URI_LOCATION_GENERAL = NS+"#LOCATION#GENERAL";
+	public final String NS = "http://www.semanticweb.org/karoliina/ontologies/2017/4/Laptop";
+//	public final String NS = "http://www.kimschouten.com/sentiment/restaurant"; 
+//	public final String URI_ActionMention = NS+"#ActionMention";
+//	public final String URI_EntityMention = NS+"#EntityMention";
+//	public final String URI_PropertyMention = NS+"#PropertyMention";
+//	public final String URI_NamedEntityMention = NS+"NamedEntityMention";
+//	public final String URI_Statement = NS+"#Statement";
+//	public final String URI_Sentiment = NS+"#Sentiment";
+//	public final String URI_Positive = NS+"#Positive";
+//	public final String URI_Negative = NS+"#Negative";
+//	public final String URI_RESTAURANT_GENERAL = NS+"#RESTAURANT#GENERAL";
+//	public final String URI_RESTAURANT_PRICES = NS+"#RESTAURANT#PRICES";
+//	public final String URI_RESTAURANT_MISCELLANEOUS = NS+"#RESTAURANT#MISCELLANEOUS";
+//	public final String URI_FOOD_PRICES = NS+"#FOOD#PRICES";
+//	public final String URI_FOOD_QUALITY = NS+"#FOOD#QUALITY";
+//	public final String URI_FOOD_STYLE_OPTIONS = NS+"#FOOD#STYLE_OPTIONS";
+//	public final String URI_DRINKS_PRICES = NS+"#DRINKS#PRICES";
+//	public final String URI_DRINKS_QUALITY = NS+"#DRINKS#QUALITY";
+//	public final String URI_DRINKS_STYLE_OPTIONS = NS+"#DRINKS#STYLE_OPTIONS";
+//	public final String URI_AMBIENCE_GENERAL = NS+"#AMBIENCE#GENERAL";
+//	public final String URI_SERVICE_GENERAL = NS+"#SERVICE#GENERAL";
+//	public final String URI_LOCATION_GENERAL = NS+"#LOCATION#GENERAL";
+//	public final String URI_Decrease = NS+"#Decrease";
+//	public final String URI_Increase = NS+"#Increase";
+//	public final String URI_NegativeEntityMention = NS+"#NegativeEntityMention";
+//	public final String URI_PositiveEntityMention = NS+"#PositiveEntityMention";
+//	public final String URI_TransitiveMention = NS+"TransitiveChangeMention";
 	public final String URI_Mention = NS+"#Mention";
 	
 	private final int SAVE_MAX_COUNTER = 10;
@@ -64,6 +72,7 @@ public class ReasoningOntology implements IOntology {
 	private OntModel ontology = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RULE_INF);
 	
 	private OntModel data;// = FileManager.get().loadModel("file:data/rdfsDemoData.rdf");
+//	private InfModel ontology;// = ModelFactory.createRDFSModel(schema, data);
 	
 	private HashMap<String, HashSet<String>> superclasses = new HashMap<>();
 	private HashMap<String, String> antonyms = new HashMap<>();
@@ -132,27 +141,27 @@ public class ReasoningOntology implements IOntology {
 //		return indiv.getURI();
 //	}
 	
-	public String addClass(String lemmaURI, String... classURIs){
-		HashSet<String> existingURIs = getLexicalizedConcepts(URI_Mention, lemmaURI.toLowerCase());
-		if (existingURIs.size() > 0){
-			return existingURIs.iterator().next();
-		}
-		
-		String URI = NS + "#" + lemmaURI.replaceAll(" ", "");
-//		if (ontology.getResource(URI) == null){
-//		OntClass newClass = (OntClass) ontology.getResource(URI);
-		OntClass newClass = data.createClass(URI);
-		newClass.addProperty(ontology.getProperty(NS+"#lex"), lemmaURI.toLowerCase());
-		for (String classURI : classURIs){
-			newClass.addSuperClass(ontology.getResource(classURI));
-		}
-		Framework.log("Add Class: "+URI);
-		this.updateInfModel();
-		return newClass.getURI();
-//		} else {
-//			return URI;
+//	public String addClass(String lemmaURI, String... classURIs){
+//		HashSet<String> existingURIs = getLexicalizedConcepts(URI_Mention, lemmaURI.toLowerCase());
+//		if (existingURIs.size() > 0){
+//			return existingURIs.iterator().next();
 //		}
-	}
+//		
+//		String URI = NS + "#" + lemmaURI.replaceAll(" ", "");
+////		if (ontology.getResource(URI) == null){
+////		OntClass newClass = (OntClass) ontology.getResource(URI);
+//		OntClass newClass = data.createClass(URI);
+//		newClass.addProperty(ontology.getProperty(NS+"#lex"), lemmaURI.toLowerCase());
+//		for (String classURI : classURIs){
+//			newClass.addSuperClass(ontology.getResource(classURI));
+//		}
+//		Framework.log("Add Class: "+URI);
+//		this.updateInfModel();
+//		return newClass.getURI();
+////		} else {
+////			return URI;
+////		}
+//	}
 	
 	
 	
@@ -176,6 +185,7 @@ public class ReasoningOntology implements IOntology {
 		
 		
 		HashSet<String> ontoConcepts=new HashSet<String>();
+//		System.out.println(literal);
 		while (iter.hasNext()) {
 			
 			Statement stmt = iter.nextStatement();
@@ -183,10 +193,12 @@ public class ReasoningOntology implements IOntology {
 			StmtIterator iter2 = ontology.listStatements(new SimpleSelector(
 					subject, 
 					ontology.getProperty("http://www.w3.org/2000/01/rdf-schema#subClassOf"),
+//					ontology.getProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
 					ontology.getResource(superclassURI)));
 			if (iter2.hasNext())
 				ontoConcepts.add(subject.getURI());
 			
+//			System.out.println(subject.toString());
 		}
 		return ontoConcepts;
 	}
@@ -196,42 +208,42 @@ public class ReasoningOntology implements IOntology {
 	 * @param lemma
 	 * @return
 	 */
-	public String getLexicalizedAction(String lemma){
-		HashSet<String> res = getLexicalizedConcepts(this.URI_ActionMention,lemma);
-		if (res.isEmpty()){
-			return null;
-		} else {
-			return res.iterator().next();	
-		}
-		
-	}
+//	public String getLexicalizedAction(String lemma){
+//		HashSet<String> res = getLexicalizedConcepts(this.URI_ActionMention,lemma);
+//		if (res.isEmpty()){
+//			return null;
+//		} else {
+//			return res.iterator().next();	
+//		}
+//		
+//	}
 	/**
 	 * Get (the) one subclass of EntityMention with this lemma. If there are more, just one of them is returned.
 	 * @param lemma
 	 * @return
 	 */
-	public String getLexicalizedEntity(String lemma){
-		HashSet<String> res = getLexicalizedConcepts(this.URI_EntityMention,lemma);
-		if (res.isEmpty()){
-			return null;
-		} else {
-			return res.iterator().next();	
-		}
-	}
+//	public String getLexicalizedEntity(String lemma){
+//		HashSet<String> res = getLexicalizedConcepts(this.URI_EntityMention,lemma);
+//		if (res.isEmpty()){
+//			return null;
+//		} else {
+//			return res.iterator().next();	
+//		}
+//	}
 	
 	/**
 	 * Get (the) one subclass of EntityMention with this lemma. If there are more, just one of them is returned.
 	 * @param lemma
 	 * @return
 	 */
-	public String getLexicalizedProperty(String lemma){
-		HashSet<String> res = getLexicalizedConcepts(this.URI_PropertyMention,lemma);
-		if (res.isEmpty()){
-			return null;
-		} else {
-			return res.iterator().next();	
-		}
-	}
+//	public String getLexicalizedProperty(String lemma){
+//		HashSet<String> res = getLexicalizedConcepts(this.URI_PropertyMention,lemma);
+//		if (res.isEmpty()){
+//			return null;
+//		} else {
+//			return res.iterator().next();	
+//		}
+//	}
 	
 	public HashSet<String> test(String literal){
 		
@@ -239,6 +251,7 @@ public class ReasoningOntology implements IOntology {
 		
 		
 		HashSet<String> ontoConcepts=new HashSet<String>();
+//		System.out.println(literal);
 		while (iter.hasNext()) {
 			
 			Statement stmt = iter.nextStatement();
@@ -250,6 +263,7 @@ public class ReasoningOntology implements IOntology {
 //			if (iter2.hasNext())
 				ontoConcepts.add(subject.getURI());
 			
+//			System.out.println(subject.toString());
 		}
 		return ontoConcepts;
 	}
@@ -404,10 +418,14 @@ public class ReasoningOntology implements IOntology {
 		HashMap<String, String> foundTargets = new HashMap<>();
 		for (String uri : foundClasses) {
 			for (String lex : getLexicalizations(uri)){
-				
+				//System.out.println("Lexicalization found for: " + subject.getURI());
+	//			if (lex.contains(" ")){
+	//				System.out.println("Found a multi word concept: " + subject.getURI() + "\t" + sentenceText);
+	//			}
 				if (lex.contains(" ") && sentenceText.contains(lex)){
 					//found one
 					foundTargets.put(lex, uri);
+	//				System.out.println("Found a multi word concept in this sentence: " + subject.getURI());
 				}
 			}
 		}
@@ -444,6 +462,56 @@ public class ReasoningOntology implements IOntology {
 		return restaurantAspects;
 	}
 	
+	
+	public static ArrayList<String> getLaptopsAspects()
+	{
+		ArrayList<String> entity = new ArrayList<String>();
+		ArrayList<String> attribute = new ArrayList<String>();
+		ArrayList<String> laptopAspects = new ArrayList<String>();
+		
+		entity.add("LAPTOP");
+		entity.add("DISPLAY");
+		entity.add("CPU");
+		entity.add("MOTHERBOARD");
+		entity.add("HARD_DISC");
+		entity.add("MEMORY");
+		entity.add("BATTERY");
+		entity.add("POWER_SUPPLY");
+		entity.add("KEYBOARD");
+		entity.add("MOUSE");
+		entity.add("FANS_COOLING");		
+		entity.add("OPTICAL_DRIVES");
+		entity.add("PORTS");
+		entity.add("GRAPHICS");
+		entity.add("MULTIMEDIA_DEVICES");
+		entity.add("HARDWARE");
+		entity.add("OS");
+		entity.add("SOFTWARE");
+		entity.add("WARRANTY");
+		entity.add("SHIPPING");
+		entity.add("SUPPORT");
+		entity.add("COMPANY");
+		
+		attribute.add("GENERAL");
+		attribute.add("PRICE");
+		attribute.add("QUALITY");
+		attribute.add("OPERATION_PERFORMANCE");
+		attribute.add("USABILITY");
+		attribute.add("DESIGN_FEATURES");
+		attribute.add("PORTABILITY");
+		attribute.add("CONNECTIVITY");
+		attribute.add("MISCELLANEOUS");
+		
+		for(int i = 0; i < entity.size(); i++)
+		{
+			for (int j = 0; j < attribute.size(); j++)
+			{
+				laptopAspects.add(entity.get(i) + "#" + attribute.get(j));
+			}
+		}
+		
+		return laptopAspects;
+	}
 	
 	/**
 	 * Since adding Individuals to the ontology 'on-the-fly' is way too slow to be useful in practice, this method
