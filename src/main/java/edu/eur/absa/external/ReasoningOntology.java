@@ -38,32 +38,7 @@ public class ReasoningOntology implements IOntology {
 	private static ReasoningOntology singletonOntology;
 	
 	public final String NS = "http://www.semanticweb.org/karoliina/ontologies/2017/4/Laptop";
-//	public final String NS = "http://www.kimschouten.com/sentiment/restaurant"; 
-//	public final String URI_ActionMention = NS+"#ActionMention";
-//	public final String URI_EntityMention = NS+"#EntityMention";
-//	public final String URI_PropertyMention = NS+"#PropertyMention";
-//	public final String URI_NamedEntityMention = NS+"NamedEntityMention";
-//	public final String URI_Statement = NS+"#Statement";
-//	public final String URI_Sentiment = NS+"#Sentiment";
-//	public final String URI_Positive = NS+"#Positive";
-//	public final String URI_Negative = NS+"#Negative";
-//	public final String URI_RESTAURANT_GENERAL = NS+"#RESTAURANT#GENERAL";
-//	public final String URI_RESTAURANT_PRICES = NS+"#RESTAURANT#PRICES";
-//	public final String URI_RESTAURANT_MISCELLANEOUS = NS+"#RESTAURANT#MISCELLANEOUS";
-//	public final String URI_FOOD_PRICES = NS+"#FOOD#PRICES";
-//	public final String URI_FOOD_QUALITY = NS+"#FOOD#QUALITY";
-//	public final String URI_FOOD_STYLE_OPTIONS = NS+"#FOOD#STYLE_OPTIONS";
-//	public final String URI_DRINKS_PRICES = NS+"#DRINKS#PRICES";
-//	public final String URI_DRINKS_QUALITY = NS+"#DRINKS#QUALITY";
-//	public final String URI_DRINKS_STYLE_OPTIONS = NS+"#DRINKS#STYLE_OPTIONS";
-//	public final String URI_AMBIENCE_GENERAL = NS+"#AMBIENCE#GENERAL";
-//	public final String URI_SERVICE_GENERAL = NS+"#SERVICE#GENERAL";
-//	public final String URI_LOCATION_GENERAL = NS+"#LOCATION#GENERAL";
-//	public final String URI_Decrease = NS+"#Decrease";
-//	public final String URI_Increase = NS+"#Increase";
-//	public final String URI_NegativeEntityMention = NS+"#NegativeEntityMention";
-//	public final String URI_PositiveEntityMention = NS+"#PositiveEntityMention";
-//	public final String URI_TransitiveMention = NS+"TransitiveChangeMention";
+
 	public final String URI_Mention = NS+"#Mention";
 	
 	private final int SAVE_MAX_COUNTER = 10;
@@ -432,35 +407,6 @@ public class ReasoningOntology implements IOntology {
 		return foundTargets;
 	}
 	
-	public static ArrayList<String> getRestaurantAspects()
-	{
-		ArrayList<String> entity = new ArrayList<String>();
-		ArrayList<String> attribute = new ArrayList<String>();
-		ArrayList<String> restaurantAspects = new ArrayList<String>();
-		
-		entity.add("RESTAURANT");
-		entity.add("FOOD");
-		entity.add("DRINKS");
-		entity.add("AMBIENCE");
-		entity.add("SERVICE");
-		entity.add("LOCATION");
-		
-		attribute.add("GENERAL");
-		attribute.add("PRICES");
-		attribute.add("QUALITY");
-		attribute.add("STYLE_OPTIONS");
-		attribute.add("MISCELLANEOUS");
-		
-		for(int i = 0; i < entity.size(); i++)
-		{
-			for (int j = 0; j < attribute.size(); j++)
-			{
-				restaurantAspects.add(entity.get(i) + "#" + attribute.get(j));
-			}
-		}
-		
-		return restaurantAspects;
-	}
 	
 	
 	public static ArrayList<String> getLaptopsAspects()
