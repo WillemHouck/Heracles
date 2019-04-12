@@ -1,23 +1,21 @@
-# Heracles
-The Heracles framework for developing and evaluating text mining algorithms
+# Apollo
+Heracles is an existing framework that can be applied to develop and evaluate text mining algorithms. 
 
-Heracles is a Java software framework intended to help develop and evaluate text mining algorithms. It is the software that I use to conduct my experiments and it might be of use to other developers.
+Apollo is based on the Heracles framework, in which the necessary adjustments and additional java files were made to create an algorithm specifically for aspect detection. This software is used to develop and evaluate several methods discussed in the research paper.
 
 ## Key features:
- * Layered structure
- * Very generic data model that should fit any text mining task
- * Wrappers for Stanford CoreNLP
- * Link to Weka toolkit for machine learning algorithms
- * Proper evaluation methods, including cross-validation, testing algorithms side-by-side, and t-tests for statistical significance
 
-## Installation
-The Heracles framework is developed as an Eclipse Java project, so after cloning, you can just import it as an existing project into your Eclipse workspace. Be aware that this project uses Java 8, so make sure you have that installed and that you have an Eclipse version recent enough to support this.
+	•	Layered structure
+	•	Wrappers for Stanford CoreNLP
+	•	Link to Weka toolkit for machine learning algorithms
+	•	Proper evaluation methods, including cross-validation, testing algorithms side-by-side, and t-test for statistical significance. 
 
-You can use the Git functionality from within Eclipse if desired, as Eclipse will detect this to be a git-based project. Maven is used to automatically link the project to all the necessary external libraries and Eclipse will start downloading the libraries as soon as you add it to the workspace. This might take some time, depending on your connection.
+## Installation:
+Apollo is an Eclipse Java project, so the project can be be cloned and then imported in an existing project. To import the project Java 8 is required, thus it should be checked if the Eclipse version is recent enough. 
 
-## Included Algorithms
-The framework currently includes the code and resources for ["Ontology-Driven Sentiment Analysis of Product and Service Aspects" @ ESWC2018](http://www.kimschouten.com/papers/eswc2018.pdf). You can find the [ontology here](https://github.com/KSchouten/Heracles/tree/master/src/main/resources/externalData) inside the repository and the presentation slides can be [downloaded here](http://www.kimschouten.com/papers/eswc2018-presentation.pdf). The data files that these algorithms work with can be obtained from the [SemEval-2015](http://alt.qcri.org/semeval2015/task12/index.php?id=data-and-tools) and [SemEval-2016](http://alt.qcri.org/semeval2016/task5/index.php?id=data-and-tools) sites.
- 
----
- 
-You contact me by sending an email to the address mentioned in the ESWC paper.
+Since Eclipse detects the project as git-based all the functions that Git has in Eclipse can be used. Before the project can be modified Maven, which is used to link all the necessary external libraries, will download these libraries.
+
+## Included Algorithms:
+The code and resources for the Apollo framework can be found [here] (https://github.com/WillemHouck/Heracles). The ontology for the [restaurant data] (https://github.com/WillemHouck/Heracles/tree/master/src/main/resources/externalData) is the same as the one in Heracles. The ontology for the laptop data can be found [here](https://github.com/WillemHouck/Heracles/tree/master/src/main/resources/externalData). The raw data files can be obtained from the [SemEval-2015](http://alt.qcri.org/semeval2015/task12/index.php?id=data-and-tools) and [SemEval-2016](http://alt.qcri.org/semeval2016/task5/index.php?id=data-and-tools) sites.
+
+
