@@ -1,7 +1,7 @@
 # HeraclesPlus
 Heracles is an existing framework from KSchouten, that can be applied to develop and evaluate text mining algorithms. 
 
-HeraclesPlus is based on the Heracles framework, in which the necessary adjustments and additional java files were made to create an algorithm specifically for aspect detection. This software is used to develop and evaluate several methods discussed in the research paper.
+HeraclesPlus is based on the Heracles framework, in which the necessary adjustments and additional java files were made to create an algorithm specifically for aspect detection. This software is used to develop and evaluate several methods discussed in the research paper. The framework consists of two branches, the master branch which contains the classes for restaurants and a Laptop branch which contains the classes for laptops. 
 
 ## Key features:
 
